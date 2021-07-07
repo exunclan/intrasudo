@@ -72,7 +72,7 @@ docker-compose exec app_container_id node run seed
 ## TODO
 
 - [ ] Unique Username (didn't work - 2021)
-- [ ] Disqualify in Bot `!dq`
+- [x] Disqualify in Bot `!dq`
   1. Allow in all servers
   2. Allow only by admins 
 - [ ] Change Finished page from `v1.0` to `v3.0`
