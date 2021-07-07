@@ -104,30 +104,34 @@ const lookup = async (message) => {
 
 const dq = async (message) => {
   try {
-    if (!message.member.roles.cache.find((r) => r.name === "admin")) return;
-    const [username, discriminator] = decodeUsername(message.content);
-
-    const user = await models.User.findOne({
-      where: {
-        discordUsername: username,
-        discordDiscriminator: discriminator,
-      },
-    });
-
-    if (!user) {
-      message.channel.send(
-        `User with username ${username}, discrimator ${discriminator} not found`
-      );
-      return;
+    message.member.roles.cache.some(async r =>{ if(r.name=="admin"){
+      const [username, discriminator] = decodeUsername(message.content);
+      const user = await models.User.findOne({
+        where: {
+          discordUsername: username,
+          discordDiscriminator: discriminator,
+        },
+      });
+  
+      if (!user) {
+        message.channel.send(
+          `User with username ${username}, discrimator ${discriminator} not found`
+        );
+        return;
+      }
+  
+      user.disqualified = true;
+      const discordUser = await message.guild.members.fetch(user.discordId);
+      await user.save();
+      await discordUser.kick();
+  
+      // message.channel.send(`https://intra.sudocrypt.com/users/${user.username}`);
+      message.channel.send(`Successfully disqualified and banned ${user.name}`);
     }
-
-    user.disqualified = true;
-    const discordUser = await message.guild.members.fetch(user.discordId);
-    await user.save();
-    await discordUser.kick();
-
-    // message.channel.send(`https://intra.sudocrypt.com/users/${user.username}`);
-    message.channel.send(`Successfully disqualified and banned ${user.name}`);
+    else{
+      message.channel.send(`You are not admin`)
+    }
+  });
   } catch (e) {
     message.channel.send(`${message.author.toString()} an error occurred`);
     console.error(e);
