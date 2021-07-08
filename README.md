@@ -7,7 +7,7 @@
 3. Clone this repo -
 
 ```
-git clone https://github.com/dotangad/intrasudo
+git clone https://github.com/exunclan/intrasudo
 ```
 
 3. Install dependencies -
@@ -42,7 +42,7 @@ npm run serve:dev
 1. Clone this repo
 
 ```
-git clone https://github.com/dotangad/intrasudo
+git clone https://github.com/exunclan/intrasudo
 ```
 
 2. Go to the GCP console and get your OAuth Client ID and secret.
