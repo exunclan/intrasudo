@@ -17,6 +17,14 @@ passport.use(
         const photo = profile.photos[profile.photos.length - 1].value;
         const email = profile.emails[0].value;
 
+        if (!email.includes("dpsrkp.net")) {
+          const err = new Error(
+            "Only dpsrkp.net emails are allowed to access this site."
+          );
+          err.statusCode = 401;
+          return done(err, null);
+        }
+
         const match = profile.displayName.match(/(\d+) ?([A-Z])$/m);
         let class_, section;
         if (match && match[1] && match[2]) {
@@ -68,6 +76,14 @@ passport.use(
 );
 
 passport.serializeUser(function (user, done) {
+  if (!user.email.includes("dpsrkp.net")) {
+    const err = new Error(
+      "Only dpsrkp.net emails are allowed to access this site."
+    );
+    err.statusCode = 401;
+    return done(err, null);
+  }
+
   done(null, user.dataValues.id);
 });
 
@@ -79,6 +95,13 @@ passport.deserializeUser(function (id, done) {
         err.statusCode = 400;
         return done(err, null);
       } else {
+        if (!user.email.includes("dpsrkp.net")) {
+          const err = new Error(
+            "Only dpsrkp.net emails are allowed to access this site."
+          );
+          err.statusCode = 401;
+          return done(err, null);
+        }
         return done(null, user);
       }
     })
