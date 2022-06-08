@@ -41,7 +41,7 @@ router.get("/initial", authenticated(), (req, res) =>
 router.post(
   "/initial",
   authenticated(),
-  function validation(req, res, next) {
+  async function validation(req, res, next) {
     function fillBody(body) {
       body.phone = body.phone || "";
       body.username = body.username || req.user.username;
@@ -59,6 +59,15 @@ router.post(
     // Username
     if (!/^[a-zA-Z0-9]+$/.test(req.body.username)) {
       res.locals.err = "Your username must only consist of letters and numbers";
+      return res.render("initial", fillBody(req.body));
+    }
+
+    const user = await models.User.findOne({
+      where: { username: req.body.username },
+    });
+
+    if (user) {
+      res.locals.err = "Username is already taken. Try a new one.";
       return res.render("initial", fillBody(req.body));
     }
 
