@@ -53,12 +53,14 @@ app.use(async (req, res, next) => {
   res.locals.authenticated = req.isAuthenticated() || false;
   res.locals.user = req.user || {};
   res.locals.csrfToken = req.csrfToken();
-  res.locals.last_notif_id = (
-    await models.Notifications.findAll({
-      limit: 1,
-      order: [["createdAt", "DESC"]],
-    })
-  )[0].id;
+  res.locals.last_notif_id = 0;
+  const notifs = await models.Notifications.findAll({
+    limit: 1,
+    order: [["createdAt", "DESC"]],
+  });
+  if (notifs.length > 0) {
+    res.locals.last_notif_id = notifs[0].id;
+  }
   console.log(res.locals.last_notif_id);
   next();
 });
