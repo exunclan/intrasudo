@@ -66,7 +66,7 @@ const getCurrentLevel = asyncH(async (req, res, next) => {
 
 router.use(fin());
 router.use(authenticated());
-router.use(discordVerified());
+// router.use(discordVerified());
 router.use(comingSoon());
 
 router.get(
