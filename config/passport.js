@@ -37,15 +37,15 @@ passport.use(
         });
 
         if (!user) {
-          const currentLevelId = await models.Level.findOne({
-            attributes: ["id"],
-            where: {
-              id: {
-                [Op.gt]: 0,
-              },
-            },
-            order: [["id", "ASC"]],
-          });
+          // const currentLevelId = await models.Level.findOne({
+          //   attributes: ["id"],
+          //   where: {
+          //     id: {
+          //       [Op.gt]: 0,
+          //     },
+          //   },
+          //   order: [["id", "ASC"]],
+          // });
 
           const newUser = await models.User.create({
             name: profile.displayName,
@@ -55,7 +55,7 @@ passport.use(
             points: 0,
             class: class_,
             section,
-            currentLevelId: currentLevelId.id,
+            currentLevelId: 1,
           });
 
           return done(null, newUser, "Registered");
