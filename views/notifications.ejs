@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("head.ejs", {title: "Play"}) %>
+  <body>
+    <%- include("navbar.ejs") %>
+
+    <style>
+      h1 {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      p {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .notifications {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .card {
+        padding: 16px;
+        border: 1px solid #1D9DE6;
+        border-radius: 12px;
+        margin: 12px 0;
+        width: 100%;
+        max-width: 500px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .card .time {
+        font-size: 12px;
+        color: #5e5e5e;
+      }
+
+      .error {
+        margin: 20px 0;
+        color: red;
+        text-align: center;
+      }
+    </style>
+
+    <div class="body-container" style="width: 100%;">
+      <div class="flex-container" style="width: 100%;">
+        <div style="width: 100%; display: flex; justify-content: center;">
+          <% if(user.disqualified) { %>
+          <div class="error">
+            You have been disqualified. Please
+            <a href="https://m.me/kavin.valli.25" style="color: red;">let us know</a>
+            if you think this is a mistake.
+          </div>
+          <% } else { %>
+            <div class="notifications">
+              <% notifications.forEach(notification => { %>
+                <div class="card" id="<%- notification.id %>">
+                  <p><%- notification.content %></p>
+                  <p class="time"><%- new Date(notification.createdAt).toLocaleString() %></p>
+                </div>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <%- include("footer.ejs") %>
+      <script src="/socket.io/socket.io.js"></script>
+      <script>
+        var socket = io();
+
+        localStorage.setItem("INTRA_LAST_NOTIF_ID", <%- notifications.length %>);
+
+        socket.on("test", (msg) => console.log(msg)) ;
+
+        socket.on("notifs:update", (msg) => {
+          console.log("UPDATED", msg)
+          document.querySelector(".notifications").innerHTML = `<div class="card" id="${msg.id}"><p>${msg.content}</p><p class="time">${new Date(msg.createdAt).toLocaleString()}</p></div>` + document.querySelector(".notifications").innerHTML;
+        })
+      </script>
+  </body>
+</html>

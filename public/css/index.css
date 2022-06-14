@@ -28,7 +28,8 @@ nav {
   padding: 0 30px;
 }
 
-nav .right a {
+nav .right a,
+nav .right svg {
   color: #eaeaef;
   font-size: 1rem;
   text-transform: uppercase;
@@ -38,6 +39,11 @@ nav .right a {
   transition: color 0.2s ease;
   margin: 0 10px;
 }
+
+nav .right svg:hover {
+  cursor: pointer;
+}
+
 nav .right a:hover {
   color: #2977f5;
 }

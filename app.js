@@ -12,14 +12,16 @@ const cors = require("cors");
 const csurf = require("csurf");
 const cookieParser = require("cookie-parser");
 const routes = require("./routes");
+const models = require("./models");
 
 const client = redis.createClient(process.env.REDIS_URL);
 const app = express();
 
 // Views and static files
-app.set("view engine", "ejs");
+app.use(express.static(path.join(__dirname, "public")));
 app.set("views", path.join(__dirname, "views"));
-app.use(express.static("public"));
+app.set("view engine", "ejs");
+// app.use(express.static("public"));
 
 // Middleware
 app.use(logger("dev"));
@@ -28,7 +30,6 @@ app.use(cors());
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded());
-app.use(express.static(path.join(__dirname, "react_build")));
 app.use(cookieParser());
 app.use(csurf({ cookie: true }));
 app.use(
@@ -48,10 +49,17 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Add auth info and csrfToken to template locals
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   res.locals.authenticated = req.isAuthenticated() || false;
   res.locals.user = req.user || {};
   res.locals.csrfToken = req.csrfToken();
+  res.locals.last_notif_id = (
+    await models.Notifications.findAll({
+      limit: 1,
+      order: [["createdAt", "DESC"]],
+    })
+  )[0].id;
+  console.log(res.locals.last_notif_id);
   next();
 });
 

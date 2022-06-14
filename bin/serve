@@ -4,7 +4,26 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 const app = require("../app");
-// const config = require("../config/config.json");
+const http = require("http");
+const server = http.createServer(app);
+const io = require("socket.io")(server);
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => console.log(`> Listening on http://localhost:${port}`));
+io.on("connection", (socket) => {
+  console.log("> A user connected:", socket.id);
+
+  socket.emit("test", "HI");
+
+  socket.on("notifs:create", (msg) => {
+    console.log(msg);
+    io.emit("notifs:update", msg);
+  });
+
+  socket.on("disconnect", () =>
+    console.log("> A user disconnected:", socket.id)
+  );
+});
+
+server.listen(port, () =>
+  console.log(`> Listening on http://localhost:${port}`)
+);
