@@ -4,12 +4,16 @@
   </div>
   <div class="right">
     <a href="/leaderboard">Leaderboard</a>
+    <a href="//exun.co/22/intrasudo/rules" target="_blank">Announcements</a>
+    <a href="//exun.co/22/intrasudo/hints" target="_blank">Hints</a>
     <% if(authenticated) { %> <% if(!user.finished) { %>
     <a href="/play">Play</a>
     <% } %> <% if(user.admin) { %>
     <a href="/levels">Levels</a>
     <% } %>
     <a href="/auth/logout">Logout</a>
+    <% } else { %>
+    <a href="/auth/google">Sign In</a>
     <% } %>
   </div>
 </nav>
